@@ -1,9 +1,13 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.http import JsonResponse
+from django.contrib.auth.models import User
+from django.contrib.auth import login,logout,authenticate
+from django.contrib import messages
 import json
 import datetime
 from .models import * 
 from .utils import cookieCart, cartData, guestOrder
+from django.http import HttpResponse
 
 def store(request):
 	data = cartData(request)
@@ -14,7 +18,55 @@ def store(request):
 
 	products = Product.objects.all()
 	context = {'products':products, 'cartItems':cartItems}
-	return render(request, 'store/store.html', context)
+	return render(request,'store/store.html', context)
+
+
+def login_view(request):
+	if request.method=='POST':
+		username=request.POST.get('username')
+		password=request.POST.get('password')
+		user=authenticate(request,username=username,password=password)
+
+		if user is not None:
+			login(request,user)
+			return redirect('store')
+		else:
+			messages.error(request,"Invalid username or password")
+	return render(request,'store/login.html')
+
+def logout_view(request):
+	logout(request)
+	return redirect('login')
+
+def register(request):
+    if request.method == "POST":
+        firstname = request.POST.get("first_name")
+        lastname = request.POST.get("last_name")
+        email = request.POST.get("email")
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+		
+
+        if not username or not firstname or not lastname or not password:
+            messages.error(request, "All fields are required.")
+            return redirect("register")
+
+        if User.objects.filter(username=username).exists():
+            messages.error(request, "Username already exists")
+            return redirect("register")
+        user = User.objects.create_user(
+            username=username,
+            first_name=firstname,
+            last_name=lastname,
+            email=email,
+            password=password
+        )
+        user.save()
+        messages.success(request, "Account Successfully created")
+        login(request, user)
+        return redirect("store")
+
+    return render(request, 'store/register.html')
 
 
 def cart(request):
