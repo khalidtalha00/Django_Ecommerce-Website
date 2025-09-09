@@ -68,6 +68,10 @@ def register(request):
 
     return render(request, 'store/register.html')
 
+def profile(request):
+	user=request.user
+	return render(request,'store/profile.html',{"user":user})
+
 
 def cart(request):
 	data = cartData(request)

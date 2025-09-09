@@ -1,13 +1,8 @@
 <!DOCTYPE html>
 {% extends 'store/Main.html' %}
+
 {% block content %}
-<style>
-    .container input{
-        margin: 5px;
-        display: flex;
-        justify-content: center;
-    }
-</style>
+{% load static %}
 <h2>Register Here</h2>
 {% if messages %}
     {% for message in messages %}

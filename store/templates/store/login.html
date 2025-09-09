@@ -13,10 +13,10 @@
             <form method="POST">
                 {% csrf_token %}
                 <label for="username">Username:</label>
-                <input type="text",name='username' required>
+                <input type="text" name="username" required>
                 <br><br>
                 <label for="password">Password:</label>
-                <input type="password",name="password">
+                <input type="password" name="password" required>
                 <br><br>
                <input type="submit" value="Log-in">
                <span style="margin-left: 25px;">Not Signed in? <a href="{% url 'register' %}">Register</a></span>
